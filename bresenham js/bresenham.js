@@ -7,12 +7,13 @@
 // HS Duesseldorf - Fachbereich Medien - Grundlagen d. Computergrafik
 //
 // Studiengang:
-// Gruppe     :
-// Autor 1    :
-// Autor 2    :
-// Autor 3    :
-// Autor 4    :
-// Autor 5    :
+// Gruppe     : I
+// Autor 1    : Sedra Alkouatli
+// Autor 2    : Christoph Kern
+// Autor 3    : Lina Khalifeh
+// Autor 4    : Felix Kircher
+// Autor 5    : Sengphachanh Lanavanh
+// Autot 6    : Felix Nienhaus
 ////////////////////////////////////////////////////////////////////////////////
 
 
