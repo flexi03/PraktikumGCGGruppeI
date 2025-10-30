@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-// bresenham_1.js
+// bresenham_1458.js
 //
-// Bresenham-Line-Algorithmus - NUR OKTANT 1
+// Bresenham-Line-Algorithmus - OKTANTEN 1, 4, 5, 8
 //
 // HS Duesseldorf - Fachbereich Medien - Grundlagen d. Computergrafik
 //
@@ -18,7 +18,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // drawLine(x0, y0, x1, y1)
-// Diese Implementierung zeichnet nur im ERSTEN OKTANT.
+// Diese Implementierung zeichnet in den OKTANTEN 1, 4, 5, 8.
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -28,59 +28,62 @@ function drawLine(x0, y0, x1, y1){
     drawOctantGuides(x0, y0, ctx);
   }
 
-  // Diese Funktion ist NUR für den 1. Oktanten geschrieben.
-  // Eine Linie ist im 1. Oktanten, wenn:
-  // 1. sie von links nach rechts geht (x1 > x0)
-  // 2. sie von oben nach unten geht (y1 >= y0) - im Canvas-Koordinatensystem
-  // 3. sie "flach" ist, d.h. die Änderung in x größer/gleich der in y ist.
-  const distanceX = x1 - x0;
-  const distanceY = y1 - y0;
+  // Diese Funktion ist für die "flachen" Oktanten 1, 4, 5 und 8 geschrieben.
+  // Das sind alle Oktanten, in denen die Änderung in x größer ist als die in y.
+  const absDistanceX = Math.abs(x1 - x0);
+  const absDistanceY = Math.abs(y1 - y0);
 
-  if (distanceX < 0 || distanceY < 0 || distanceX < distanceY) {
-    // Linie ist nicht im 1. Oktanten, daher wird nichts gezeichnet.
-    // (distanceX <= 0 würde auch horizontale Linien ausschließen, daher < 0)
+  // Wenn die Linie "steil" ist (dy > dx), wird sie nicht gezeichnet.
+  if (absDistanceY > absDistanceX) {
     return;
   }
 
+  // Schrittrichtung für x und y bestimmen (+1 oder -1).
+  const stepX = (x0 < x1) ? 1 : -1;
+  const stepY = (y0 < y1) ? 1 : -1;
+
   // Der Fehlerterm entscheidet, wann die "langsame" Achse (Y) einen Schritt macht.
-  let errorTerm = distanceX / 2.0;
+  let errorTerm = absDistanceX / 2.0;
 
   let currentX = x0;
   let currentY = y0;
 
-  // Die Schleife läuft, solange der x-Endpunkt nicht erreicht ist.
-  // Da wir uns im 1. Oktant befinden, wird x immer um 1 erhöht.
-  while (currentX <= x1) {
+  // Die Schleife läuft, solange der Endpunkt nicht erreicht ist.
+  while (true) {
     setPixel(currentX, currentY);
 
-    // Endpunkt erreicht?
-    if (currentX === x1) {
+    if (currentX === x1 && currentY === y1) {
       break;
     }
 
     // Fehlerterm aktualisieren.
-    errorTerm -= distanceY;
+    errorTerm -= absDistanceY;
 
-    // Wenn der Fehler negativ wird, muss y um eins erhöht werden.
+    // Wenn der Fehler negativ wird, muss ein Schritt in y-Richtung gemacht werden.
     if (errorTerm < 0) {
-      currentY += 1; // Im 1. Oktant geht y immer nach unten (+1).
-      errorTerm += distanceX;
+      currentY += stepY; // Die Richtung (stepY) wird hier verwendet.
+      errorTerm += absDistanceX;
     }
 
-    currentX += 1; // Im 1. Oktant geht x immer nach rechts (+1).
+    // Ein Schritt in x-Richtung (stepX) wird immer gemacht, da dies die "schnelle" Achse ist.
+    currentX += stepX;
   }
 }
 
+
+
+////////////////////////////////////////////////////////////////////////////////
 // drawOctantGuides(x0, y0, ctx)
 // Visualisiert die Oktanten um den Startpunkt
-// Grün = funktioniert (nur Oktant 1), Rot = nicht implementiert
+// Grün = funktioniert (Oktanten 1,4,5,8), Rot = nicht implementiert
+////////////////////////////////////////////////////////////////////////////////
 function drawOctantGuides(x0, y0, ctx) {
   var centerX = 2 * x0 + 1;
   var centerY = 2 * y0 + 1;
   var radius = 80;
 
-  // Nur Oktant 1 ist aktiv!
-  var activeOctants = [1];
+  // Nur die flachen Oktanten 1, 4, 5, 8 sind aktiv!
+  var activeOctants = [1, 4, 5, 8];
 
   ctx.save();
 

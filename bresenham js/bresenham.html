@@ -1,18 +1,54 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="ISO-8859-1">
+    <meta charset="utf-8">
     <title>GCG -- Bresenham Line</title>
-    <script src="./bresenham.js"></script>
+    <script src="./bresenham.js" id="bresenhamScript"></script>
     <script src="./gcg/gcg.js"></script>
     <script src="./gcg/gcg01.js"></script>
     <link rel="stylesheet" href="gcg/gcg.css" />
+    <style>
+      button[data-active="true"] {
+        background: #90ee90;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body onload="main()">
     <h1>Grundlagen der Computergrafik</h1>
     <h2>Bresenham Line</h2>
+
+    <p class="center">
+      <button data-version="bresenham_1.js" onclick="changeVersion('bresenham_1.js')">Nur Oktant 1</button>
+      <button data-version="bresenham_1458.js" onclick="changeVersion('bresenham_1458.js')">Oktanten 1,4,5,8</button>
+      <button data-version="bresenham.js" onclick="changeVersion('bresenham.js')">Alle 8 Oktanten</button>
+    </p>
+
     <canvas id="GCG01canvas" width="640" height="480"></canvas>
     <p id="GCG01mousePosition" class="center">&nbsp;</p>
     <p class="center"><code id="GCG01drawLine"></code>&nbsp;</p>
+
+    <script>
+      function changeVersion(v) {
+        location.href = location.pathname + '?v=' + v;
+      }
+
+      (function() {
+        var v = new URLSearchParams(location.search).get('v') || 'bresenham_1.js';
+
+        if (v !== 'bresenham.js') {
+          var old = document.getElementById('bresenhamScript');
+          if (old) old.remove();
+          var s = document.createElement('script');
+          s.src = './' + v;
+          s.id = 'bresenhamScript';
+          document.head.insertBefore(s, document.querySelector('script[src*="gcg.js"]'));
+        }
+
+        document.querySelectorAll('button').forEach(function(btn) {
+          btn.setAttribute('data-active', btn.getAttribute('data-version') === v);
+        });
+      })();
+    </script>
   </body>
 </html>
